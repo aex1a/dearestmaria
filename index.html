@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>M</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; overflow:hidden; }
+  body {
+    background:#6b7aa1;
+    font-family: Tahoma, Arial, sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px;
+  }
+
+  /* ===================================================== */
+  /* WINDOW CHROME - Windows XP / IE6                      */
+  /* ===================================================== */
+  .win-window {
+    width:1024px; 
+    height:720px; 
+    max-width: 98vw;
+    max-height: 98vh;
+    background:#ECE9D8;
+    border:1px solid #0054E3;
+    border-radius:8px 8px 0 0;
+    box-shadow: 2px 3px 10px rgba(0,0,0,0.4);
+    font-family: Tahoma, Arial, sans-serif;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+
+  .titlebar {
+    height:30px;
+    background: linear-gradient(to bottom, #2e6df6 0%, #1c5cf3 4%, #0d52ec 12%, #0a4ce3 50%, #0840c6 88%, #0a4ce3 100%);
+    display:flex;
+    align-items:center;
+    padding:3px 3px 3px 4px;
+    color:#fff;
+    font-size:12.5px;
+    font-weight:bold;
+    flex-shrink:0;
+    border-radius:7px 7px 0 0;
+  }
+  .titlebar .icon {
+    width:16px; height:16px; margin-right:6px;
+    background:#fff;
+    border-radius:3px;
+    flex-shrink:0;
+    position:relative;
+    box-shadow: inset 0 0 0 1px #aac4f7;
+  }
+  .titlebar .icon::after {
+    content:"";
+    position:absolute;
+    top:3px; left:3px; right:3px;
+    height:1px;
+    background:#1955E6;
+    box-shadow: 0 3px 0 #1955E6, 0 6px 0 #cfe0ff;
+  }
+  .titlebar .title-text {
+    flex:1;
+    letter-spacing:0.2px;
+    text-shadow:1px 1px 1px rgba(0,0,0,0.35);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .titlebar .btns { display:flex; gap:2px; margin-left:6px; }
+  .titlebar .btns div {
+    width:21px; height:20px;
+    border-radius:3px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px;
+    font-family: "Marlett", Arial, sans-serif;
+    color:#fff;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+  }
+  .btn-min { background:linear-gradient(to bottom,#3f8df7,#1b5fe0); border:1px solid #0a3aa3;}
+  .btn-max { background:linear-gradient(to bottom,#3f8df7,#1b5fe0); border:1px solid #0a3aa3;}
+  .btn-close { background:linear-gradient(to bottom,#f78a7a,#e0301e); border:1px solid #8c1b0e;}
+  .titlebar .btns div:hover { filter: brightness(1.2); }
+  .titlebar .btns div:active { filter: brightness(0.8); }
+
+  .menubar {
+    background:#ECE9D8;
+    font-size:12px;
+    padding:4px 8px;
+    display:flex;
+    gap:16px;
+    border-bottom:1px solid #fff;
+    flex-shrink:0;
+  }
+  .menubar span { cursor: pointer; padding: 2px 4px; border: 1px solid transparent; }
+  .menubar span:hover { border: 1px solid #ACA899; background: #fff; border-radius: 2px; }
+  .menubar span u { text-decoration:underline; }
+
+  .toolbar {
+    background:#ECE9D8;
+    border-top:1px solid #fff;
+    border-bottom:1px solid #ACA899;
+    padding:5px 8px;
+    display:flex;
+    align-items:flex-start;
+    gap:1px;
+    font-size:11px;
+    color:#000;
+    flex-shrink:0;
+  }
+  .toolbar .tbtn {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    width:54px;
+    padding:2px 2px 1px;
+    color:#1a1a1a;
+    text-align:center;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .toolbar .tbtn:not(.disabled):hover { background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); }
+  .toolbar .tbtn:not(.disabled):active { background: rgba(0,0,0,0.1); }
+  .toolbar .tbtn.disabled { color:#9a9a9a; cursor: default; }
+  .tbtn .gicon {
+    width:24px; height:22px;
+    margin-bottom:2px;
+    display:block;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:20px 20px;
+  }
+  .gicon.back {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M5 12 L13 5 L13 9 L19 9 L19 15 L13 15 L13 19 Z' fill='%232f6fd1' stroke='%231a3f80' stroke-width='1'/%3E%3C/svg%3E");
+  }
+  .gicon.fwd {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M19 12 L11 5 L11 9 L5 9 L5 15 L11 15 L11 19 Z' fill='%23bcbcbc' stroke='%23999999' stroke-width='1'/%3E%3C/svg%3E");
+  }
+  .gicon.stop {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='12' r='9' fill='%232f6fd1' stroke='%231a3f80' stroke-width='1'/%3E%3Crect x='8' y='8' width='8' height='8' fill='white'/%3E%3C/svg%3E");
+  }
+  .gicon.refresh {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M6 9 A7 7 0 0 1 18 7' fill='none' stroke='%23227a22' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpolygon points='18,3 18,9 13,7' fill='%23227a22'/%3E%3Cpath d='M18 15 A7 7 0 0 1 6 17' fill='none' stroke='%23227a22' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpolygon points='6,21 6,15 11,17' fill='%23227a22'/%3E%3C/svg%3E");
+  }
+  .gicon.home {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpolygon points='12,4 21,12 18,12 18,20 6,20 6,12 3,12' fill='%23c8410f' stroke='%237a280a' stroke-width='1'/%3E%3Crect x='8' y='13' width='8' height='7' fill='%23ffd24d' stroke='%23a3854d' stroke-width='1'/%3E%3Crect x='10.5' y='15' width='3' height='5' fill='%237a280a'/%3E%3C/svg%3E");
+  }
+  .gicon.search {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Crect x='4' y='3' width='11' height='14' fill='white' stroke='%23888' stroke-width='1'/%3E%3Cline x1='6' y1='6' x2='12' y2='6' stroke='%23bbb' stroke-width='1'/%3E%3Cline x1='6' y1='9' x2='12' y2='9' stroke='%23bbb' stroke-width='1'/%3E%3Ccircle cx='15' cy='15' r='4.5' fill='none' stroke='%231a4fa3' stroke-width='2.2'/%3E%3Cline x1='18.2' y1='18.2' x2='21.5' y2='21.5' stroke='%231a4fa3' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
+  .gicon.fav {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpolygon points='12,3 14.7,9.2 21.5,9.8 16.3,14.2 18,21 12,17.2 6,21 7.7,14.2 2.5,9.8 9.3,9.2' fill='%23ffcc33' stroke='%23a3771a' stroke-width='1'/%3E%3C/svg%3E");
+  }
+  .gicon.hist {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Ccircle cx='12' cy='13' r='8' fill='%23ece6f7' stroke='%237c4da3' stroke-width='1.6'/%3E%3Cline x1='12' y1='13' x2='12' y2='8' stroke='%237c4da3' stroke-width='1.6' stroke-linecap='round'/%3E%3Cline x1='12' y1='13' x2='16' y2='15' stroke='%237c4da3' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M8 4 L12 4' stroke='%237c4da3' stroke-width='1.4'/%3E%3C/svg%3E");
+  }
+  .gicon.mail {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Crect x='3' y='6' width='18' height='13' fill='%23eaf6ff' stroke='%234d8fa3' stroke-width='1.4'/%3E%3Cpath d='M3 7 L12 14 L21 7' fill='none' stroke='%234d8fa3' stroke-width='1.4'/%3E%3C/svg%3E");
+  }
+  .gicon.print {
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Crect x='6' y='4' width='12' height='6' fill='white' stroke='%23888' stroke-width='1'/%3E%3Crect x='4' y='9' width='16' height='7' fill='%23cfcfcf' stroke='%23777' stroke-width='1'/%3E%3Crect x='7' y='15' width='10' height='6' fill='white' stroke='%23888' stroke-width='1'/%3E%3Ccircle cx='17' cy='12' r='0.9' fill='%23227a22'/%3E%3C/svg%3E");
+  }
+  .toolbar .sep { width:1px; background:#ACA899; margin:2px 5px; align-self:stretch; }
+
+  .addressbar {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:5px 8px;
+    background:#ECE9D8;
+    border-bottom:1px solid #ACA899;
+    font-size:12px;
+    flex-shrink:0;
+  }
+  .addr-input {
+    flex:1;
+    height:22px;
+    border:1px solid #7F9DB9;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    padding:0 5px;
+    font-family: Tahoma, Arial, sans-serif;
+    font-size:12px;
+    color:#000;
+  }
+  .addr-input .heart-fav { font-size:11px; }
+  .addr-go {
+    height:23px; padding:0 10px;
+    border:1px solid #7F9DB9;
+    border-radius:2px;
+    background: linear-gradient(to bottom, #fdfdfd, #e3e3e3);
+    display:flex; align-items:center; gap:3px;
+    font-size:12px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .addr-go:hover { background: linear-gradient(to bottom, #fff, #d4d4d4); }
+  .addr-go:active { background: linear-gradient(to bottom, #d4d4d4, #fff); }
+  
+  .linksbar {
+    display:flex; align-items:center; gap:12px;
+    padding:3px 8px;
+    background:#ECE9D8;
+    border-bottom:1px solid #ACA899;
+    font-size:11px;
+    color:#15349a;
+    flex-shrink:0;
+  }
+  .linksbar span { cursor: pointer; }
+  .linksbar span:hover { text-decoration: underline; }
+
+  /* ===================================================== */
+  /* PAGE CONTENT                                          */
+  /* ===================================================== */
+  .page {
+    background-color:#F7F2EB;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.012) 0px, transparent 1px, transparent 3px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.012) 0px, transparent 1px, transparent 3px);
+    flex-grow:1;
+    min-height:0;
+    overflow:hidden; 
+    position:relative;
+    padding:12px 20px;
+    font-family: "Courier New", monospace;
+  }
+
+  .scrap-grid {
+    display:flex;
+    flex-direction:column;
+    height:100%;
+  }
+  .scrap-main {
+    display:flex;
+    gap:10px;
+    flex:1;
+    min-height:0;
+  }
+
+  /* ---------- shared scrap pieces ---------- */
+  .tape {
+    position:absolute;
+    background: rgba(232, 212, 165, 0.55);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    border: 1px solid rgba(180,150,90,0.25);
+  }
+  .tape.yellow { background: rgba(245, 222, 140, 0.6); border-color: rgba(178,150,40,0.3); }
+  .tape.blue { background: rgba(178, 210, 232, 0.55); border-color: rgba(110,150,180,0.3); }
+  .tape.mint { background: rgba(190, 224, 200, 0.55); border-color: rgba(110,170,130,0.3); }
+  .tape.pink { background: rgba(240, 195, 212, 0.55); border-color: rgba(200,130,160,0.3); }
+  .tape.lav { background: rgba(206, 190, 230, 0.55); border-color: rgba(150,125,190,0.3); }
+  .tape.striped {
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 3px, transparent 3px, transparent 6px);
+  }
+  .paperclip {
+    position:absolute;
+    width:26px; height:46px;
+    pointer-events:none;
+  }
+  .pin {
+    position:absolute;
+    width:14px; height:14px;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #fff3a8, #d4a017 70%, #8a6a0a);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.4);
+  }
+
+  /* ---------- paper flaws (scratch / tear) ---------- */
+  .tear-tl::before, .tear-tr::before, .tear-bl::before, .tear-br::before {
+    content:"";
+    position:absolute;
+    width:9px; height:7px;
+    background:#6b7aa1;
+    z-index:2;
+  }
+  .tear-tl::before { top:-1px; left:18px; clip-path: polygon(0 0, 100% 0, 60% 100%, 20% 60%); background:inherit; }
+  .page .tear-tl::before, .page .tear-tr::before, .page .tear-bl::before, .page .tear-br::before {
+    background:#F7F2EB;
+  }
+  .tear-tr::before { top:-1px; right:14px; clip-path: polygon(0 0, 100% 0, 80% 100%, 30% 70%); }
+  .tear-bl::before { bottom:-1px; left:22px; clip-path: polygon(20% 0, 80% 30%, 60% 100%, 0 100%); }
+  .tear-br::before { bottom:-1px; right:16px; clip-path: polygon(20% 0, 100% 0, 100% 100%, 50% 60%); }
+
+  .scratch::after {
+    content:"";
+    position:absolute;
+    height:1px;
+    background: rgba(120,105,80,0.22);
+    z-index:2;
+  }
+  .scratch-1::after { top:22%; left:8%; width:34%; transform: rotate(-9deg); }
+  .scratch-2::after { bottom:18%; right:10%; width:22%; transform: rotate(12deg); }
+  .scratch-3::after { top:55%; left:60%; width:18%; transform: rotate(-4deg); }
+
+  /* ---------- header torn paper ---------- */
+  .header-area {
+    position:relative;
+    display:flex;
+    gap:18px;
+    align-items:flex-start;
+    padding-bottom:4px;
+    flex-shrink:0;
+    z-index: 2;
+  }
+  .welcome-note {
+    width:180px; 
+    background-color:#fffdf6;
+    background-image:
+      repeating-linear-gradient(13deg, rgba(120,105,70,0.05) 0px, transparent 2px, transparent 7px),
+      repeating-linear-gradient(-31deg, rgba(120,105,70,0.045) 0px, transparent 2px, transparent 9px),
+      repeating-linear-gradient(98deg, rgba(255,255,255,0.55) 0px, transparent 1px, transparent 6px),
+      radial-gradient(circle at 80% 15%, rgba(120,105,70,0.07), transparent 40%),
+      radial-gradient(circle at 15% 85%, rgba(120,105,70,0.06), transparent 35%);
+    border:1px solid #e3dcc8;
+    box-shadow: 1px 2px 5px rgba(0,0,0,0.12), inset 0 0 14px rgba(120,105,70,0.06);
+    transform: rotate(-2deg);
+    padding:8px 10px 10px;
+    font-family: "Comic Sans MS", "Segoe Print", cursive;
+    font-size:11.5px;
+    color:#444;
+    line-height:1.4;
+    position:relative;
+    margin-top:10px;
+    clip-path: polygon(0 2%, 2% 6%, 4% 1%, 9% 0, 18% 1%, 30% 0, 45% 1%, 60% 0, 78% 1%, 92% 0, 98% 2%, 100% 8%, 99% 20%, 100% 35%, 98% 50%, 100% 65%, 99% 80%, 100% 92%, 97% 97%, 90% 100%, 70% 99%, 50% 100%, 30% 99%, 12% 100%, 3% 98%, 0 92%, 1% 75%, 0 60%, 1% 45%, 0 30%, 1% 15%);
+  }
+
+  .header-paper {
+    flex:1;
+    background:#fffdf7;
+    background-image: repeating-linear-gradient(white 0px, white 21px, #cfe3f5 22px);
+    border:1px solid #e3dcc8;
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.15);
+    padding:14px 32px 12px 40px;
+    position:relative;
+    clip-path: polygon(0 0, 100% 0, 100% 92%, 98% 100%, 2% 97%, 0 100%);
+    margin-top:0;
+    overflow:hidden;
+  }
+  .header-paper::before {
+    content:"";
+    position:absolute;
+    top:0; bottom:0; left:30px;
+    width:1.5px;
+    background:#f3b8c8;
+  }
+  .header-title {
+    font-family: "Comic Sans MS", "Segoe Print", cursive;
+    font-size:26px; 
+    color:#3a3a3a;
+    transform: rotate(-1deg);
+  }
+  .header-sub {
+    font-family: "Courier New", monospace;
+    font-size:12.5px;
+    color:#b34a78;
+    margin-top:7px;
+  }
+
+  .polaroid {
+    width:150px; 
+    background:#fff;
+    padding:9px 9px 24px;
+    box-shadow: 2px 4px 10px rgba(0,0,0,0.25);
+    transform: rotate(3deg);
+    position:relative;
+    margin-top:2px;
+  }
+  .polaroid .photo {
+    width:100%; height:90px;
+    background: linear-gradient(180deg, #f6b88a 0%, #e98a98 35%, #8a6fae 70%, #3b3a5c 100%);
+    position:relative;
+    overflow:hidden;
+  }
+  
+  .polaroid .cap {
+    text-align:center;
+    font-family:"Comic Sans MS", "Segoe Print", cursive;
+    font-size:11px;
+    color:#555;
+    margin-top:8px;
+  }
+
+  /* ---------- columns ---------- */
+  .col-left, .col-right {
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding-top:2px;
+    flex-shrink:0;
+  }
+  .col-left { width:190px; }
+  .col-right { width:195px; }
+
+  .sticky {
+    padding:9px 11px;
+    font-family: "Comic Sans MS", "Segoe Print", cursive;
+    font-size:11.5px;
+    line-height:1.35;
+    color:#3a3a3a;
+    box-shadow: 1px 3px 6px rgba(0,0,0,0.18);
+    position:relative;
+  }
+  .sticky.pink   { background:#F8DCE7; transform: rotate(-1.5deg); }
+  .sticky.lav    { background:#E7DCF8; transform: rotate(1.2deg); }
+  .sticky.beige  { background:#E8DCCB; transform: rotate(-1deg); }
+  .sticky .label { font-weight:bold; font-size:10.5px; color:#7a5a6a; margin-bottom:4px; font-family:"Courier New",monospace; text-transform:lowercase; }
+
+  .pixel-cat {
+    width:40px; height:34px;
+    margin:4px auto 6px;
+    position:relative;
+  }
+  .pixel-cat .body { position:absolute; bottom:0; left:6px; width:28px; height:20px; background:#fdfdfd; border:1.5px solid #555; border-radius:6px 6px 4px 4px;}
+  .pixel-cat .ear-l { position:absolute; top:-5px; left:8px; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-bottom:8px solid #fdfdfd; }
+  .pixel-cat .ear-r { position:absolute; top:-5px; left:25px; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-bottom:8px solid #fdfdfd; }
+  .pixel-cat .face { position:absolute; top:2px; left:6px; width:28px; height:16px; }
+  .pixel-cat .eye { position:absolute; width:2.5px; height:3px; background:#333; top:6px; }
+  .pixel-cat .eye.l { left:10px; } .pixel-cat .eye.r { left:18px; }
+  .pixel-cat .blush { position:absolute; width:5px; height:3px; border-radius:50%; background:#f5b3c4; top:10px; }
+  .pixel-cat .blush.l { left:4px; } .pixel-cat .blush.r { left:22px; }
+
+  /* ---------- notepad window ---------- */
+  .col-center {
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    min-height:0; /* REQUIRED FOR SCROLLING */
+    margin-top: -65px; 
+    position: relative;
+    z-index: 1; 
+  }
+  .notepad {
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    min-height:0; /* REQUIRED FOR SCROLLING */
+    background:#fff;
+    border:1px solid #6b6b8c;
+    box-shadow: 3px 5px 14px rgba(0,0,0,0.3);
+    transform: rotate(0.2deg);
+  }
+  .notepad-title {
+    height:24px;
+    background: linear-gradient(to bottom, #b7a8e0 0%, #9c87cf 50%, #8672bf 100%);
+    display:flex;
+    align-items:center;
+    padding:0 4px 0 7px;
+    color:#fff;
+    font-size:11.5px;
+    font-weight:bold;
+    flex-shrink:0;
+    gap:6px;
+  }
+  .notepad-title .nicon { width:13px; height:13px; background:#fff8c4; border:1px solid #b8a93a; flex-shrink:0; }
+  .notepad-title .ntitle { flex:1; }
+  .notepad-title .nbtns { display:flex; gap:2px; }
+  .notepad-title .nbtns div {
+    width:17px; height:15px;
+    background:#ece9d8;
+    border:1px solid #fff;
+    border-right-color:#716F64; border-bottom-color:#716F64;
+    font-size:9px;
+    display:flex; align-items:center; justify-content:center;
+    color:#000;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .notepad-title .nbtns div:hover { background:#dcd9c6; }
+  .notepad-title .nbtns div:active { background:#c0bdaf; }
+
+  .notepad-menubar {
+    font-size:11px;
+    padding:2px 8px;
+    background:#ECE9D8;
+    border-bottom:1px solid #ccc;
+    display:flex;
+    gap:10px;
+    color:#333;
+    flex-shrink:0;
+  }
+  .notepad-menubar span { cursor: pointer; padding: 2px 4px; border: 1px solid transparent; }
+  .notepad-menubar span:hover { border: 1px solid #ACA899; background: #fff; }
+
+  .notepad-body-wrap {
+    flex:1;
+    background:
+      linear-gradient(to right, transparent 0px, transparent 26px, #f5c4d4 26px, #f5c4d4 27px, transparent 27px);
+    background-color:#fffdfa;
+    position:relative;
+    overflow:hidden;
+  }
+  .notepad-body {
+    position: absolute; /* FORCES EXACT FILL TO FIX FLEXBOX SCROLLING BUGS */
+    top: 0; left: 0; right: 0; bottom: 0;
+    padding:8px 15px 8px 30px; 
+    font-family:"Courier New", monospace;
+    font-size:11.5px;
+    line-height:1.35;
+    color:#3a3a3a;
+    overflow-y:scroll; /* Force scroll visibility */
+    overflow-x:hidden;
+  }
+
+  /* ADDED CUSTOM SCROLLBAR FOR NOTEPAD - IMPROVED VISIBILITY */
+  .notepad-body::-webkit-scrollbar {
+    width: 18px;
+  }
+  .notepad-body::-webkit-scrollbar-track {
+    background: #f0eee4; /* Lighter track */
+    border-left: 1px solid #a3a3a3;
+  }
+  .notepad-body::-webkit-scrollbar-thumb {
+    background: #a9a696; /* Darker, clearly visible thumb */
+    border: 1px solid #fff;
+    border-right: 2px solid #666;
+    border-bottom: 2px solid #666;
+    border-radius: 2px;
+  }
+  .notepad-body::-webkit-scrollbar-thumb:hover {
+    background: #8b8878; /* Even darker on hover */
+  }
+  .notepad-body::-webkit-scrollbar-button {
+    background: #dcd9c6;
+    display: block;
+    border: 1px solid #fff;
+    border-right: 2px solid #666;
+    border-bottom: 2px solid #666;
+    height: 16px;
+  }
+
+  .notepad-body p { margin:0 0 10px 0; color:#000000; font-size:15px; }
+  .notepad-body .pink-line { color:#cc5588; }
+  .notepad-body .signoff { color:#cc5588; text-align:center; font-style:italic; margin-top:4px;}
+
+  /* ---------- music player (paper note style) ---------- */
+  .player {
+    background-color:#FBF3F6;
+    background-image: repeating-linear-gradient(#FBF3F6 0px, #FBF3F6 17px, #f0d5e0 18px);
+    border:1px solid #e3b8cc;
+    box-shadow: 1px 3px 7px rgba(0,0,0,0.18);
+    padding:10px 12px 11px;
+    transform: rotate(-1.4deg);
+    position:relative;
+    clip-path: polygon(0 0, 96% 0, 100% 6%, 100% 100%, 4% 100%, 0 92%);
+  }
+  .player .tape-strip {
+    position:absolute;
+    top:-9px; left:14px;
+    width:34px; height:16px;
+    transform: rotate(-6deg);
+  }
+  .player .label { font-family:"Courier New",monospace; font-size:10px; color:#9a5070; margin-bottom:5px; }
+  .player .track {
+    font-family:"Comic Sans MS","Segoe Print",cursive;
+    font-size:12px;
+    color:#3a3a3a;
+    margin-bottom:7px;
+    border-bottom:1px dashed #d8a8bf;
+    padding-bottom:6px;
+  }
+  .player .track .artist { color:#9a5070; font-size:10px; display:block; margin-top:1px;}
+  .player .progress {
+    height:2px;
+    background:none;
+    border:none;
+    border-top:1.4px dashed #c46a91;
+    margin-bottom:3px;
+    position:relative;
+  }
+  .player .progress .fill { display:none; }
+  .player .progress .knob {
+    position:absolute; top:-5px; left:33%;
+    width:0; height:0;
+  }
+  .player .progress .knob::before {
+    content:"\2661";
+    position:absolute;
+    left:-6px; top:-7px;
+    color:#c46a91;
+    font-size:12px;
+  }
+  .player .times { display:flex; justify-content:space-between; font-size:9px; color:#9a5070; margin-bottom:6px; font-family:"Courier New",monospace;}
+  .player .controls { display:flex; justify-content:center; gap:14px; align-items:center; }
+  .player .pbtn {
+    width:20px; height:20px;
+    border-radius:50%;
+    border:1.4px solid #9a5070;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fffdfb;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.2s;
+  }
+  .player .pbtn:hover { background: #fdf0f4; transform: scale(1.1); }
+  .player .pbtn:active { transform: scale(0.95); }
+  .player .pbtn::before { content:""; width:0; height:0; }
+  .ctrl-prev::before { border-top:5px solid transparent; border-bottom:5px solid transparent; border-right:6px solid #9a5070; margin-right:1px; }
+  .ctrl-play::before { border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:7px solid #9a5070; margin-left:1px; }
+  .ctrl-next::before { border-top:5px solid transparent; border-bottom:5px solid transparent; border-left:6px solid #9a5070; margin-left:1px; }
+
+  /* ---------- favorites ---------- */
+  .favs {
+    background:#fffdf7;
+    background-image: repeating-linear-gradient(white 0px, white 16px, #cfe3f5 17px);
+    border:1px solid #e3dcc8;
+    box-shadow: 1px 3px 6px rgba(0,0,0,0.15);
+    padding:8px 11px 9px 17px;
+    font-family:"Comic Sans MS","Segoe Print",cursive;
+    font-size:11.5px;
+    color:#444;
+    transform: rotate(0.6deg);
+    position:relative;
+  }
+  .favs .label { font-family:"Courier New",monospace; font-size:10px; color:#7a5a6a; margin-bottom:4px; font-style:normal;}
+  .favs ul { list-style:none; }
+  .favs li { margin-bottom:2px; }
+  .favs li .star { color:#e8a33d; margin-right:5px; }
+
+  .ps-note {
+    background:#F2D9C2;
+    border:1px solid #ddbf9a;
+    box-shadow: 1px 3px 6px rgba(0,0,0,0.15);
+    padding:9px 11px;
+    font-family:"Comic Sans MS","Segoe Print",cursive;
+    font-size:11.5px;
+    color:#5a4632;
+    line-height:1.35;
+    transform: rotate(-1.4deg);
+  }
+  .ps-note .label { font-family:"Courier New",monospace; font-size:10px; color:#8a6a4a; margin-bottom:4px; }
+
+  .doodle {
+    position:absolute;
+    pointer-events:none;
+  }
+  .heart-doodle {
+    width:13px; height:12px;
+    position:relative;
+    display:inline-block;
+    top:3px;
+  }
+  .heart-doodle .sq {
+    position:absolute;
+    top:1px; left:1px;
+    width:8px; height:8px;
+    background:#e8336e;
+    transform:rotate(45deg);
+  }
+  .heart-doodle::before {
+    content:"";
+    position:absolute;
+    top:0; left:0;
+    width:8px; height:8px;
+    background:#e8336e;
+    border-radius:50%;
+  }
+  .heart-doodle::after {
+    content:"";
+    position:absolute;
+    top:0; left:5px;
+    width:8px; height:8px;
+    background:#e8336e;
+    border-radius:50%;
+  }
+  .heart-doodle.small { transform:scale(0.75); }
+  .heart-doodle.lav::before, .heart-doodle.lav::after, .heart-doodle.lav .sq { background:#a98fd6; }
+
+  .star-doodle {
+    width:13px; height:13px;
+    position:relative;
+    display:inline-block;
+  }
+  .star-doodle::before, .star-doodle::after {
+    content:"";
+    position:absolute;
+    top:50%; left:50%;
+    width:13px; height:4px;
+    background:#f2c14e;
+    transform: translate(-50%,-50%) rotate(0deg);
+  }
+  .star-doodle::after { transform: translate(-50%,-50%) rotate(90deg); }
+
+  .moon-doodle {
+    width:22px; height:22px;
+    border-radius:50%;
+    background:#f5d77e;
+    box-shadow: 6px -2px 0 0 #F7F2EB inset;
+    transform: rotate(-25deg);
+  }
+
+  .sparkle {
+    width:8px; height:8px;
+    position:relative;
+  }
+  .sparkle::before, .sparkle::after {
+    content:"";
+    position:absolute;
+    background:#c9a8e8;
+  }
+  .sparkle::before { top:50%; left:0; width:100%; height:1.4px; transform:translateY(-50%); }
+  .sparkle::after { left:50%; top:0; height:100%; width:1.4px; transform:translateX(-50%); }
+
+  .flower-doodle {
+    width:14px; height:14px;
+    position:relative;
+  }
+  .flower-doodle span {
+    position:absolute;
+    width:6px; height:6px;
+    background:#f5a0c4;
+    border-radius:50%;
+  }
+  .flower-doodle span:nth-child(1){ top:0; left:4px; }
+  .flower-doodle span:nth-child(2){ top:4px; left:8px; }
+  .flower-doodle span:nth-child(3){ top:8px; left:4px; }
+  .flower-doodle span:nth-child(4){ top:4px; left:0; }
+  .flower-doodle span:nth-child(5){ top:4px; left:4px; background:#f2c12e; }
+
+  .envelope-doodle {
+    width:20px; height:14px;
+    border:1.4px solid #8a8a8a;
+    background:#fff;
+    position:relative;
+  }
+  .envelope-doodle::before {
+    content:"";
+    position:absolute;
+    top:0; left:0;
+    width:0; height:0;
+    border-left:10px solid transparent;
+    border-right:10px solid transparent;
+    border-top:7px solid #ddd;
+  }
+
+  .footer-strip {
+    text-align:center;
+    font-family:"Courier New", monospace;
+    font-size:10.5px;
+    color:#999;
+    margin-top:6px;
+    line-height:1.5;
+    flex-shrink:0;
+  }
+
+  .status-bar {
+    background:#ECE9D8;
+    border-top:1px solid #fff;
+    padding:3px 10px;
+    font-size:11px;
+    display:flex;
+    justify-content:space-between;
+    color:#000;
+    flex-shrink:0;
+  }
+
+  /* ---------- custom mouse trail ---------- */
+  .mouse-trail {
+    position: absolute;
+    pointer-events: none;
+    color: #8c629c;
+    font-size: 14px;
+    z-index: 10000;
+    animation: floatUp 0.8s ease-out forwards;
+    text-shadow: 0 0 2px rgba(255,255,255,0.8);
+  }
+  @keyframes floatUp {
+    0% { opacity: 0.9; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-25px) scale(0.6); }
+  }
+</style>
+</head>
+<body>
+
+<div class="win-window">
+
+  <div class="titlebar">
+    <div class="icon"></div>
+    <div class="title-text">- Microsoft Internet Explorer</div>
+    <div class="btns">
+      <div class="btn-min">&#x2013;</div>
+      <div class="btn-max">&#x25A1;</div>
+      <div class="btn-close">&#x2715;</div>
+    </div>
+  </div>
+
+  <div class="menubar">
+    <span><u>F</u>ile</span>
+    <span><u>E</u>dit</span>
+    <span><u>V</u>iew</span>
+    <span>F<u>a</u>vorites</span>
+    <span><u>T</u>ools</span>
+    <span><u>H</u>elp</span>
+  </div>
+
+  <div class="toolbar">
+    <div class="tbtn"><div class="gicon back"></div>Back</div>
+    <div class="tbtn disabled"><div class="gicon fwd"></div>Forward</div>
+    <div class="sep"></div>
+    <div class="tbtn"><div class="gicon stop"></div>Stop</div>
+    <div class="tbtn"><div class="gicon refresh"></div>Refresh</div>
+    <div class="tbtn" onclick="window.open('https://www.instagram.com/marya.sarmie')"><div class="gicon home"></div>Home</div>
+    <div class="sep"></div>
+    <div class="tbtn" onclick="window.open('https://altl.io/')"><div class="gicon search"></div>Search</div>
+    <div class="tbtn" onclick="window.open('https://youtu.be/5_A7VlJEspI?si=921KLEmBWtwC6f-3&t=48', '_blank')"><div class="gicon fav"></div>Favorites</div>
+    <div class="tbtn" onclick="window.open('https://apod.nasa.gov/apod/ap051001.html')"><div class="gicon hist"></div>History</div>
+    <div class="sep"></div>
+    <div class="tbtn" onclick="window.open('https://aex1a.github.io/dear.maria/')"><div class="gicon mail"></div>Mail</div>
+    <div class="tbtn" onclick="window.print();">
+    <div class="gicon print"></div>
+    Print
+</div>
+  </div>
+
+  <div class="addressbar">
+    <span>Address</span>
+    <div class="addr-input"><span class="heart-fav"></span> http://www.dearest.maria/</div>
+    <div class="addr-go">&#8635; Go</div>
+    <span>Links &#187;</span>
+  </div>
+
+  <div class="page" id="page-content">
+    <div class="scrap-grid">
+
+      <div class="header-area">
+        <div class="welcome-note">
+          ----------------------......................................<br>............................... <br>----------------------......................................<br>............................... <br>-------------
+          <span style="float:right; color:#e8336e;">&#9825;</span>
+        </div>
+
+        <div class="header-paper tear-tr scratch-1">
+          <div class="header-title">thought you'd like this, sana</div>
+          <div class="header-sub">this isn't much, but it's made with you in mind AYY</div>
+        </div>
+
+        <div class="polaroid scratch-2">
+          <div class="photo"><img src="sun.jpg" alt="Sunrise" style="width:100%; height:100%; object-fit:cover;"></div>
+          <div class="cap">i took a photo of a sunrise today :D </div>
+        </div>
+      </div>
+
+      <div class="scrap-main">
+      <div class="col-left">
+        <div class="sticky pink" style="position:relative;">
+          <div class="tape blue" style="top:-8px; left:-6px; width:32px; height:14px; transform:rotate(-12deg);"></div>
+          <div class="tape yellow striped" style="top:-7px; right:8px; width:26px; height:13px; transform:rotate(8deg);"></div>
+          <div class="label">how aRe uuu</div>
+          
+          <div style="text-align:center;">maria <br>
+    <br></div>
+        </div>
+
+        <div class="sticky beige" id="quote-sticky" style="position:relative;">
+          <div class="tape mint" style="top:-7px; left:50%; transform:translateX(-50%) rotate(3deg); width:36px; height:14px;"></div>
+          <div class="label">random quote:</div>
+          <div id="quote-text">"The future is no more uncertain than the present"</div>
+          <div id="quote-author" style="text-align:right; margin-top:4px; font-size:10.5px;">&#8212; Walt Whitman</div>
+          <br>
+        </div>
+
+        <div class="sticky lav" style="position:relative;">
+          <div class="tape pink striped" style="top:-8px; right:-5px; width:30px; height:15px; transform:rotate(14deg);"></div>
+          <div class="tape lav" style="bottom:-6px; left:10px; width:24px; height:12px; transform:rotate(-6deg);"></div>
+          <div class="label">random note:</div>
+          You're worth <br>  taking the time for
+        </div>
+      </div>
+
+      <div class="col-center">
+        <div class="notepad">
+          <div class="notepad-title">
+            <div class="nicon"></div>
+            <div class="ntitle">for_maria.txt - Notepad</div>
+            <div class="nbtns"><div>&#x2013;</div><div>&#x25A1;</div><div>&#x2715;</div></div>
+          </div>
+          <div class="notepad-menubar"><span>File</span><span>Edit</span><span>Format</span><span>Help</span></div>
+          <div class="notepad-body-wrap">
+            <div class="notepad-body">
+              <p class="pink-line">dearest maria, </p>
+              <p>Hey, just wanted to drop this little project of mine. I know you're tired so you can take your time reading this if it's too overwhelming ^^
+                <p> I know there are things/people still(?) messing with your head lately but please, don't let them take up space in your mind.
+                <p>I know naman na it's not as simple as deciding to stop thinking about them, especially when things end with questions left unanswered. But I hope you don't spend too much of yourself trying to understand people who aren't making an effort to understand you anymore or pang tritrip lang ganap.</p>
+              <p>For me haa the best thing you can ever focus on and appreciate is yourself talaga. You are so amazing, so don't let any of that negativity get to you (I know you said na hindi ka nadadala sakanila, juswt to remind you lang :)</p>
+              <p>I really admire how you carry yourself, like even when you shared everything with me hindi ko nakuha impression that you were someone who wanted revenge or wished bad on anyone naman. You were honest about what hurt you, but you still chose forgiveness. Para sakin that says a lot about your character.</p>
+              <p>The more we talk, the more I realize there's always another side of you to appreciate. Whether it's the way you think, the way you explain things, or mga random tots you tell, it never really feels repetitive.</p>
+              <p>Another thing is despite us na both being busy, we still make time for random convos. They don't always have to be long. Sometimes it's just checking in, sharing something random, or like how ur day went. Those convos have become something I genuinely look forward to. </p>
+              <p>On a lighter note, super happy talaga ako since we exchanged IGs naman. Hindi naman sa malaking bagay siya, pero it's nice seeing bits of your personality outside our chats. Ang <i>ganda mo</i> talaga, alam mo ba.</p>
+              <p>Please take care of your heart. I know I'm still just someone, but I genuinely hope I get the chance to be the person who takes care of it someday. Until then, I'll keep proving that my intentions are real nalang :) I promise that if life ever gives me that chance, I'll patiently wait and do my best to take care of the heart you've worked so hard to protect.</p>
+              <p>I'm glad you're comfortable enough to share something with me. It means a lot to me, and I hope it makes you feel appreciated too :)</p>
+              <p class="signoff">with all sincerity,<br>Alexia</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="player">
+          <div class="tape-strip tape yellow striped"></div>
+          <div class="label">currently playing:</div>
+          <div class="track">Till I Met You <span class="artist">&#9834; Angeline Quinto</span></div>
+          <div class="progress"><div class="knob"></div></div>
+          <div class="times"><span>01:23</span><span>03:42</span></div>
+          <div class="controls">
+            <div class="pbtn ctrl-prev"></div>
+            <div class="pbtn ctrl-play"></div>
+            <div class="pbtn ctrl-next"></div>
+          </div>
+        </div>
+
+        <div class="favs scratch-3">
+          <div class="label">i enjoy:</div>
+          <ul>
+            <li><span class="star">&#9733;</span>hearing about your day</li>
+            <li><span class="star">&#9733;</span>sunsets</li>
+            <li><span class="star">&#9733;</span>knowing u a little more</li>
+            <li><span class="star">&#9733;</span>the way ur mind works</li>
+          </ul>
+        </div>
+
+        <div class="ps-note">
+          <div class="label">p.s.</div>
+          i hope this project<br>makes you smile today, miss ganda
+        </div>
+      </div>
+      </div>
+      <div class="footer-strip">
+        made with all my heart.<br>
+      </div>
+
+    </div>
+
+    <div class="doodle" style="top:18px; right:300px;"><div class="heart-doodle"><span class="sq"></span></div></div>
+    <div class="doodle" style="top:62px; right:268px;"><div class="moon-doodle"></div></div>
+    <div class="doodle" style="top:8px; left:300px;"><div class="sparkle"></div></div>
+    <div class="doodle" style="top:70px; left:330px;"><div class="sparkle"></div></div>
+    <div class="doodle" style="top:8px; left:255px;"><div class="heart-doodle small"><span class="sq"></span></div></div>
+    <div class="doodle" style="top:160px; right:430px;"><div class="heart-doodle"><span class="sq"></span></div></div>
+    <div class="doodle" style="top:230px; right:400px;"><div class="heart-doodle lav" style="transform:scale(1.3) rotate(8deg);"><span class="sq"></span></div></div>
+    <div class="doodle" style="top:6px; left:55px;"><div class="sparkle"></div></div>
+    <div class="doodle" style="bottom:180px; left:32px;"><div class="heart-doodle"><span class="sq"></span></div></div>
+    <div class="doodle" style="bottom:50px; left:18px;"><div class="sparkle"></div></div>
+    <div class="doodle" style="bottom:55px; right:12px;"><div class="heart-doodle"><span class="sq"></span></div></div>
+    <div class="doodle" style="top:300px; left:248px;"><div class="star-doodle"></div></div>
+    
+    <div class="doodle" style="top:14px; left:198px; transform:rotate(35deg); z-index: 3;">
+      <div class="tape" style="position:relative; width:38px; height:16px;"></div>
+    </div>
+    
+    <div class="doodle" style="top:178px; right:200px;"><div class="flower-doodle"><span></span><span></span><span></span><span></span><span></span></div></div>
+
+  </div>
+
+  <div class="status-bar">
+    <span>Done</span>
+    <span>&#127760; Internet</span>
+  </div>
+
+</div>
+
+<script>
+  // ---------- quote of the day ----------
+  const quotes = [
+    { text: "The future is no more uncertain than the present.", author: "Walt Whitman" },
+    
+  ];
+  (function setQuote(){
+    const pick = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById("quote-text").textContent = '"' + pick.text + '"';
+    document.getElementById("quote-author").textContent = "\u2014 " + pick.author;
+  })();
+
+  // ---------- mouse trail interaction ----------
+  (function initMouseTrail() {
+    let throttleTimer;
+    document.getElementById('page-content').addEventListener('mousemove', function(e) {
+      if (throttleTimer) return;
+      
+      // Control how frequently a trail drops (every 60ms)
+      throttleTimer = setTimeout(() => { throttleTimer = null; }, 60);
+      
+      // Add randomness so it doesn't drop on every single tick, feels more natural
+      if(Math.random() > 0.8) return;
+
+      const trail = document.createElement('div');
+      trail.className = 'mouse-trail';
+      trail.innerHTML = '♡'; 
+      
+      // Calculate position relative to the container
+      const rect = this.getBoundingClientRect();
+      const left = e.clientX - rect.left;
+      const top = e.clientY - rect.top;
+      
+      trail.style.left = left + 'px';
+      trail.style.top = top + 'px';
+      
+      this.appendChild(trail);
+      
+      // Clean up after animation ends
+      setTimeout(() => {
+        if(trail.parentNode) trail.parentNode.removeChild(trail);
+      }, 800);
+    });
+  })();
+</script>
+
+</body>
+</html>
